@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Profile - Nguyễn Khắc Tuyên</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+        .about-me {
+            color: #004d40; /* Màu chữ cho phần "About Me" */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #e0f2f1; /* Màu nền nhẹ nhàng */
+            color: #000000; /* Đặt màu chữ thành đen */
+        }
+
+        .icon-box {
+            text-align: center;
+            background-color: #235077;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .icon-box:hover {
+            background-color: #e0f2f1;
+            transform: scale(1.05);
+        }
+        .icon-box i {
+            color: #00796b;
+        }
+        .personal-interests-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .personal-interests-image {
+            flex: 1;
+            text-align: center;
+            padding: 20px;
+        }
+        .personal-interests-content {
+            flex: 2;
+        }
+        .personal-interests-content h5 {
+            margin-top: 10px;
+        }
+        .personal-interests-content p {
+            font-size: 1.1rem;
+            color: #00796b; /* Màu chữ mô tả sở thích cá nhân */
+        }
+
+        .card h3, .card h4 {
+            color: #004d40; /* Màu chữ tiêu đề trong thẻ card */
+        }
+
+        .card p {
+            color: #000000; /* Đặt màu chữ trong thẻ p thành đen */
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <!-- Thanh Menu -->
+        <div class="row navigation mb-4">
+            <div class="col-md-8 d-flex align-items-center">
+                <h1 class="my-home me-3">My Profile</h1>
+                <div class="home">
+                    <img class="icon" src="../assets/vectors/icon_x2.svg" alt="Home Icon" />
+                </div>
+            </div>
+            <div class="col-md-4 text-end">
+                <div class="btn-group">
+                    <a href="wind.html" class="btn btn-outline-primary">Bai_5</a>
+                    <a href="dashboard.html" class="btn btn-outline-primary">Dashboard</a>
+                    <a href="stream.html" class="btn btn-outline-primary">Data</a>
+                    <a href="history.html" class="btn btn-outline-primary">History</a>
+                    <a href="profile.html" class="btn btn-primary active">Profile</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Content -->
+        <div class="row mb-4">
+            <div class="col-md-4 text-center">
+                <img src="anhnen.JPG" alt="Profile Picture" class="img-fluid rounded-circle mb-3" style="width: 200px; height: 200px; object-fit: cover;">
+                <h2 class="text-center text-primary">Nguyễn Khắc Tuyên</h2>
+                <h4 class="text-muted">Student, Information Security</h4>
+                <p><strong>Student ID:</strong> B21DCAT217</p>
+                <p><strong>Class:</strong> D21CQAT01-B</p>
+            </div>
+            <div class="col-md-8">
+                <div class="card p-4 mb-4">
+                    <h3 class="text-primary mb-3">About Me</h3>
+                    <p>Hello! I'm Nguyễn Khắc Tuyên, a final-year student in Information Security at the Posts and Telecommunications Institute of Technology. I have a strong passion for cybersecurity and technology. My goal is to become an expert in the field and contribute to creating safer digital environments.</p>
+                </div>
+                <div class="card p-4 mb-4">
+                    <h4 class="text-primary mb-3">Contact Information</h4>
+                    <p><strong>Phone:</strong> 123-456-7890</p>
+                    <p><strong>Email:</strong> nguyenkhactuyen@example.com</p>
+                    <p><strong>Address:</strong> Hà Nội, Việt Nam</p>
+                </div>
+                <div class="card p-4 mb-4">
+                    <h4 class="text-primary mb-3">Personal Interests</h4>
+                    <div class="personal-interests-container">
+                        <div class="personal-interests-image">
+                            <img src="https://image-us.eva.vn/upload/4-2020/images/2020-11-20/image1-1605853239-751-width600height450.jpg" alt="Interests Image" class="img-fluid rounded">
+                        </div>
+                        <div class="personal-interests-content">
+                            <p>Here are some of my personal interests that fuel my passion and drive:</p>
+                            <div class="d-flex flex-wrap">
+                                <div class="p-3">
+                                    <div class="icon-box">
+                                        <i class="fas fa-laptop-code fa-3x"></i>
+                                        <h5 class="mt-2">Technology</h5>
+                                    </div>
+                                </div>
+                                <div class="p-3">
+                                    <div class="icon-box">
+                                        <i class="fas fa-puzzle-piece fa-3x"></i>
+                                        <h5 class="mt-2">CTF Competitions</h5>
+                                    </div>
+                                </div>
+                                <div class="p-3">
+                                    <div class="icon-box">
+                                        <i class="fas fa-code fa-3x"></i>
+                                        <h5 class="mt-2">Coding</h5>
+                                    </div>
+                                </div>
+                                <div class="p-3">
+                                    <div class="icon-box">
+                                        <i class="fas fa-share-alt fa-3x"></i>
+                                        <h5 class="mt-2">Open Source</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card p-4 mb-4">
+                    <h4 class="text-primary mb-3">Academic Links</h4>
+                    <p><strong>GitHub Group Link:</strong> <a href="https://github.com/mucngon" target="_blank">https://github.com/mucngon</a></p>
+                    <p><strong>Project Report (PDF):</strong> <a href="B21DCAT217_NguyenKhacTuyen_IOT.pdf" target="_blank">Download Report</a></p>
+                    <p><strong>API Documentation:</strong> <a href="..\conect\api-docs.yaml" target="_blank">View API Docs</a></p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

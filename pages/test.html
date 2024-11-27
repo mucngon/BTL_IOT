@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wind Speed Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h2>Wind Speed Chart</h2>
+    <div>
+        <canvas id="windSpeedChart"></canvas>
+    </div>
+
+    <script>
+        // Fetch data from your API
+        fetch('http://localhost:5002/api/wind/history?limit=100')
+            .then(response => response.json())
+            .then(data => {
+                // Prepare data for chart
+                const labels = data.map(item => new Date(item.timestamp).toLocaleTimeString());
+                const windSpeedData = data.map(item => item.windSpeed);
+
+                // Create chart
+                const ctx = document.getElementById('windSpeedChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Wind Speed (km/h)',
+                            data: windSpeedData,
+                            borderColor: 'rgba(75, 192, 192, 1)', // Line color
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)', // Fill color
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Time'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Wind Speed (km/h)'
+                                },
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    </script>
+</body>
+</html>

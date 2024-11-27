@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <title>Smart Home Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/date-fns/2.29.3/date-fns.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-adapter-date-fns/2.0.1/chartjs-adapter-date-fns.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="wind.css" />
+    <style>
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <!-- Navigation Header -->
+        <div class="row mb-4">
+            <div class="col-md-8 d-flex align-items-center">
+                <h1 class="h3 mb-0">
+                    <i class="fas fa-home me-2"></i>
+                    My Smart Home
+                    <span class="status-indicator status-online" title="System Online"></span>
+                </h1>
+            </div>
+            <div class="col-md-4 text-end">
+                <div class="btn-group">
+                    <a href="wind.html" class="btn btn-primary">Bai_5</a>
+                    <a href="dashboard.html" class="btn btn-outline-primary">Dashboard</a>
+                    <a href="stream.html" class="btn btn-outline-primary">Data</a>
+                    <a href="history.html" class="btn btn-outline-primary">History</a>
+                    <a href="profile.html" class="btn btn-outline-primary">Profile</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Row -->
+        <div class="row mb-4">
+            <!-- Wind Speed Display -->
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title" style="color: black;">Current Wind Speed</h5>
+                        <p id="windSpeedValue" class="display-4" style="color: black;">0 m/s</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wind Speed Alert -->
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body d-flex flex-column align-items-center justify-content-center text-center">
+                        <h5 class="card-title" style="color: black;">Wind Speed Alert</h5> <!-- Đặt màu chữ đen -->
+                        <div id="windSpeedAlertContainer" style="width: 100%; height: 200px; overflow: hidden; display: flex; justify-content: center; align-items: center;">
+                            <img id="windSpeedIcon" src="path/to/your/image.png" alt="Wind Speed Icon" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            
+
+            <!-- Wind Speed Chart -->
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title " style="color: black;">Wind Speed Chart</h5>
+                        <div>
+                            <canvas id="windSpeedChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+
+            
+
+        </div>
+    </div>
+    <script>
+        // Hàm gọi API và cập nhật thông báo tốc độ gió
+        function fetchWindSpeed() {
+            fetch('http://localhost:5002/api/wind/latest')
+                .then(response => response.json())
+                .then(data => {
+                    const windSpeed = data.windSpeed || 0;
+                    const alertText = document.getElementById('windSpeedAlert');
+                    const windSpeedIcon = document.getElementById('windSpeedIcon');
+    
+                    if (windSpeed > 60) {
+                        
+                        windSpeedIcon.src = "../images/big.jfif"; // Đường dẫn đến hình ảnh cảnh báo
+                    } else {
+                       
+                        windSpeedIcon.src = '../images/wind/small.jfif'; // Không hiển thị hình ảnh cảnh báo nếu dưới ngưỡng
+                    }
+                })
+                .catch(error => console.error('Error fetching wind speed:', error));
+        }
+    
+        // Gọi hàm fetchWindSpeed mỗi 5 giây để cập nhật thông báo
+        setInterval(fetchWindSpeed, 5000);
+    </script>
+
+    <script>
+        // Initialize chart variable
+        let windSpeedChart = null;
+
+        // Function to fetch and update data
+        function fetchDataAndUpdateChart() {
+            fetch('http://localhost:5002/api/wind/history?limit=10')
+                .then(response => response.json())
+                .then(data => {
+                    const labels = data.map(item => new Date(item.timestamp).toLocaleTimeString());
+                    const windSpeedData = data.map(item => item.windSpeed);
+
+                    // Check if the chart is initialized
+                    if (!windSpeedChart) {
+                        // Initialize chart if not created yet
+                        const ctx = document.getElementById('windSpeedChart').getContext('2d');
+                        windSpeedChart = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: 'Wind Speed (km/h)',
+                                    data: windSpeedData,
+                                    borderColor: 'rgba(75, 192, 192, 1)', // Line color
+                                    backgroundColor: 'rgba(75, 192, 192, 0.2)', // Fill color
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                scales: {
+                                    x: {
+                                        title: {
+                                            display: true,
+                                            text: 'Time'
+                                        }
+                                    },
+                                    y: {
+                                        title: {
+                                            display: true,
+                                            text: 'Wind Speed (km/h)'
+                                        },
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+                    } else {
+                        // Update chart data if chart is already initialized
+                        windSpeedChart.data.labels = labels;
+                        windSpeedChart.data.datasets[0].data = windSpeedData;
+                        windSpeedChart.update();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        }
+
+        // Fetch data and update the chart every 5 seconds
+        setInterval(fetchDataAndUpdateChart, 5000); // 5000ms = 5 seconds
+
+        // Initial fetch on page load
+        fetchDataAndUpdateChart();
+    </script>
+    
+    <script>
+        // Hàm để lấy và hiển thị giá trị tốc độ gió mới nhất
+        function fetchLatestWindSpeed() {
+            fetch('http://192.168.183.156:5002/api/wind/latest')
+                .then(response => response.json())
+                .then(data => {
+                    const windSpeedValue = data.windSpeed.toFixed(1);
+                    document.getElementById('windSpeedValue').textContent = `${windSpeedValue} m/s`;
+                    updateWindSpeedAlert(windSpeedValue);  // Cập nhật cảnh báo tốc độ gió
+                })
+                .catch(error => console.error('Error fetching wind speed:', error));
+        }
+
+        // Hàm để cập nhật biểu đồ gió
+       
+        // Cập nhật biểu đồ mỗi 10 giây và tốc độ gió mỗi 5 giây
+        setInterval(fetchLatestWindSpeed, 5000);
+        setInterval(updateWindSpeedData, 10000);
+
+        
+
+        // Khởi tạo biểu đồ Chart.js
+      
+    </script>
+</body>
+</html>

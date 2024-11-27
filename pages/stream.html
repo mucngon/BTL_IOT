@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Stream - Device Control</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+        .sortable {
+            cursor: pointer;
+        }
+        .sortable:hover {
+            background-color: #f8f9fa;
+        }
+        .sort-icon {
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row navigation mb-4">
+            <div class="col-md-8 d-flex align-items-center">
+                <h1 class="my-home me-3">My Smart Home</h1>
+                <div class="home">
+                    <img class="icon" src="../assets/vectors/icon_x2.svg" alt="Home Icon" />
+                </div>
+            </div>
+            <div class="col-md-4 text-end">
+                <div class="btn-group">
+                    <a href="wind.html" class="btn btn-outline-primary">Bai_5</a>
+                    <a href="dashboard.html" class="btn btn-outline-primary">Dashboard</a>
+                    <a href="stream.html" class="btn btn-primary active">Data</a>
+                    <a href="history.html" class="btn btn-outline-primary">History</a>
+                    <a href="profile.html" class="btn btn-outline-primary">Profile</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between mb-3">
+            <input type="text" id="searchInput" class="form-control w-25" placeholder="Tìm kiếm..." onkeyup="filterTable()">
+            <select id="filterSelect" class="form-select w-25" onchange="filterTable()">
+                <option value="all">Tất cả</option>
+                <option value="id">ID</option>
+                <option value="temperature">Nhiệt độ</option>
+                <option value="light">Ánh sáng</option>
+                <option value="humidity">Độ ẩm</option>
+                <option value="time">Thời gian</option>
+            </select>
+            <select id="rowsPerPage" class="form-select w-25" onchange="updatePagination()">
+                <option value="5">5 Dòng</option>
+                <option value="10">10 Dòng</option>
+                <option value="20">20 Dòng</option>
+                <option value="50">50 Dòng</option>
+            </select>
+        </div>
+
+        <div class="card p-4 shadow-sm">
+            <h2 class="text-center">Stream Data</h2>
+            <table class="table table-hover" id="dataTable">
+                <thead>
+                    <tr>
+                        <th class="sortable" data-sort="id">ID <i class="fas fa-sort sort-icon"></i></th>
+                        <th class="sortable" data-sort="temperature">Nhiệt độ (°C) <i class="fas fa-sort sort-icon"></i></th>
+                        <th class="sortable" data-sort="light">Ánh sáng (lux) <i class="fas fa-sort sort-icon"></i></th>
+                        <th class="sortable" data-sort="humidity">Độ ẩm (%) <i class="fas fa-sort sort-icon"></i></th>
+                        <th class="sortable" data-sort="time">Thời gian <i class="fas fa-sort sort-icon"></i></th>
+                    </tr>
+                </thead>
+                <tbody id="userTableBody">
+                    <!-- Dữ liệu sẽ được thêm động vào đây -->
+                </tbody>
+            </table>
+            
+            <nav>
+                <ul class="pagination justify-content-center" id="pagination">
+                    <!-- Các nút phân trang sẽ được tạo động bằng JavaScript -->
+                </ul>
+            </nav>
+        </div>
+    </div>
+    
+    <!-- Liên kết tới tệp JavaScript -->
+    <script src = stream.js>
+
+    </script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

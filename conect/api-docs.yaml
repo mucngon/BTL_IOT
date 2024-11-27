@@ -1,0 +1,242 @@
+openapi: 3.0.0
+info:
+  title: IoT  API
+  description: API for controlling IoT devices and retrieving sensor data.
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000
+  - url: http://localhost:5001
+
+paths:
+  /api/data:
+    get:
+      summary: Retrieve paginated sensor data
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+          description: The page number for pagination.
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: The number of records per page.
+        - in: query
+          name: filterType
+          schema:
+            type: string
+          description: The type of filter to apply.
+        - in: query
+          name: searchQuery
+          schema:
+            type: string
+          description: The search query for filtering.
+        - in: query
+          name: sortColumn
+          schema:
+            type: string
+          description: The column to sort by.
+        - in: query
+          name: sortDirection
+          schema:
+            type: string
+            enum: [asc, desc]
+          description: The sort direction.
+      responses:
+        '200':
+          description: Successfully retrieved data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                  pagination:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                      currentPage:
+                        type: integer
+                      totalPages:
+                        type: integer
+                      limit:
+                        type: integer
+        '500':
+          description: Internal Server Error
+
+  /api/control:
+    post:
+      summary: Send action to control a device
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                deviceName:
+                  type: string
+                action:
+                  type: string
+      responses:
+        '200':
+          description: Successfully sent action
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+
+  /api/light-status:
+    get:
+      summary: Get the latest status of the Light device
+      responses:
+        '200':
+          description: Successfully retrieved light status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+        '500':
+          description: Internal Server Error
+
+  /api/light-status2:
+    get:
+      summary: Get the latest status of the Air Conditioner device
+      responses:
+        '200':
+          description: Successfully retrieved status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+        '500':
+          description: Internal Server Error
+
+  /api/light-status3:
+    get:
+      summary: Get the latest status of the Fan device
+      responses:
+        '200':
+          description: Successfully retrieved status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+        '500':
+          description: Internal Server Error
+
+  /api/sensor-data:
+    get:
+      summary: Get the latest sensor data
+      responses:
+        '200':
+          description: Successfully retrieved sensor data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  temperature:
+                    type: number
+                  humidity:
+                    type: number
+                  light:
+                    type: number
+        '500':
+          description: Internal Server Error
+
+  /api/history:
+    get:
+      summary: Retrieve paginated device history
+      servers:
+        - url: http://localhost:5001
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+          description: The page number for pagination.
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: The number of records per page.
+        - in: query
+          name: filterType
+          schema:
+            type: string
+          description: The type of filter to apply.
+        - in: query
+          name: searchQuery
+          schema:
+            type: string
+          description: The search query for filtering.
+        - in: query
+          name: sortColumn
+          schema:
+            type: string
+          description: The column to sort by.
+        - in: query
+          name: sortDirection
+          schema:
+            type: string
+            enum: [asc, desc]
+          description: The sort direction.
+      responses:
+        '200':
+          description: Successfully retrieved history
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                  pagination:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                      currentPage:
+                        type: integer
+                      totalPages:
+                        type: integer
+                      limit:
+                        type: integer
+        '500':
+          description: Internal Server Error
+
+components:
+  schemas:
+    MqttMessage:
+      type: object
+      properties:
+        topic:
+          type: string
+        message:
+          type: string

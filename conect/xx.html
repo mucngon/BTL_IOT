@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh sách Dữ liệu IoT</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <h1>Danh sách Dữ liệu IoT</h1>
+    <table id="userTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nhiệt độ (°C)</th>
+                <th>Ánh sáng (lux)</th>
+                <th>Độ ẩm (%)</th>
+                <th>Thời gian</th>
+            </tr>
+        </thead>
+        <tbody id="userTableBody">
+            <!-- Dữ liệu người dùng sẽ được thêm vào đây -->
+        </tbody>
+    </table>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchUsers();
+        });
+
+        function fetchUsers() {
+            fetch('http://localhost:3000/api/data')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const tableBody = document.getElementById('userTableBody');
+                    tableBody.innerHTML = '';
+
+                    if (data.length === 0) {
+                        tableBody.innerHTML = '<tr><td colspan="5">Không có dữ liệu để hiển thị</td></tr>';
+                    } else {
+                        data.forEach(item => {
+                            const row = `
+                                <tr>
+                                    <td>${item.id || 'N/A'}</td>
+                                    <td>${item.temperature || 'N/A'}</td>
+                                    <td>${item.light || 'N/A'}</td>
+                                    <td>${item.humidity || 'N/A'}</td>
+                                    <td>${new Date(item.time).toLocaleString() || 'N/A'}</td>
+                                </tr>
+                            `;
+                            tableBody.innerHTML += row;
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Lỗi:', error);
+                    const tableBody = document.getElementById('userTableBody');
+                    tableBody.innerHTML = '<tr><td colspan="5">Có lỗi xảy ra khi tải dữ liệu</td></tr>';
+                });
+        }
+    </script>
+    <script>function fetchUsers() {
+        fetch('http://localhost:5000/api/data')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                const tableBody = document.getElementById('userTableBody');
+                tableBody.innerHTML = '';
+    
+                if (data.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="5">Không có dữ liệu để hiển thị</td></tr>';
+                } else {
+                    data.forEach(item => {
+                        const row = `
+                            <tr>
+                                <td>${item.id || 'N/A'}</td>
+                                <td>${item.temperature || 'N/A'}</td>
+                                <td>${item.light || 'N/A'}</td>
+                                <td>${item.humidity || 'N/A'}</td>
+                                <td>${new Date(item.time).toLocaleString() || 'N/A'}</td>
+                            </tr>
+                        `;
+                        tableBody.innerHTML += row;
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Lỗi:', error);
+                const tableBody = document.getElementById('userTableBody');
+                tableBody.innerHTML = '<tr><td colspan="5">Có lỗi xảy ra khi tải dữ liệu: ' + error.message + '</td></tr>';
+            });
+    }
+    </script>
+    </body>
+</body>
+</html>

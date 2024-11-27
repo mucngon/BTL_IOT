@@ -1,0 +1,769 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dashboard</title>
+    <!-- Chart.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chart.js Time Adapter for date-fns -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <!-- Thêm vào phần head của file HTML -->
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mqtt/4.3.7/mqtt.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+<script src="https://unpkg.com/lucide-react"></script>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+        
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row navigation mb-4">
+            <div class="col-md-8 d-flex align-items-center">
+                <h1 class="my-home me-3">My Smart Home</h1>
+                <div class="home">
+                    <img class="icon" src="../assets/vectors/icon_x2.svg" alt="Home Icon" />
+                </div>
+            </div>
+            <div class="col-md-4 text-end">
+                <div class="btn-group">
+                    <a href="wind.html" class="btn btn-outline-primary">Bai_5</a>
+                    <a href="dashboard.html" class="btn btn-primary active">Dashboard</a>
+                    <a href="stream.html" class="btn btn-outline-primary">Data</a>
+                    <a href="history.html" class="btn btn-outline-primary">History</a>
+                    <a href="profile.html" class="btn btn-outline-primary">Profile</a>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card text-center p-3" id="temperatureCard">
+                    <h2 class="card-title">Temperature</h2>
+                    <span class="value display-1" id="temperatureValue">36°C</span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center p-3" id="luminosityCard">
+                    <h2 class="card-title">Luminosity</h2>
+                    <span class="value display-1" id="luminosityValue">75 Lux</span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center p-3" id="humidityCard">
+                    <h2 class="card-title">Humidity</h2>
+                    <span class="value display-1" id="humidityValue">45%</span>
+                </div>
+            </div>
+        </div>
+        
+    
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <div class="card p-4">
+                    <h3 class="diagram">Home Environment Monitoring</h3>
+                    <div id="chartContainer">
+                        <canvas id="sensorChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="device-controls">
+                <div id="connectionStatus" class="connection-status"></div>
+                <h2 class="controls-title">Device Controls</h2>
+                
+                <div class="device-item light" data-device="light">
+                    <div class="device-info">
+                        <div class="icon-wrapper">
+                            <i class="fas fa-lightbulb device-icon"></i>
+                        </div>
+                        <span class="device-name">Light</span>
+                    </div>
+                    <label class="toggle">
+                        <input type="checkbox" class="device-toggle" data-led="led1">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+        
+                <div class="device-item ac" data-device="Air Conditioner">
+                    <div class="device-info">
+                        <div class="icon-wrapper">
+                            <i class="fas fa-wind device-icon"></i>
+                        </div>
+                        <span class="device-name">Air Conditioner</span>
+                    </div>
+                    <label class="toggle">
+                        <input type="checkbox" class="device-toggle" data-led="led2">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+        
+                <div class="device-item fan" data-device="fan">
+                    <div class="device-info">
+                        <div class="icon-wrapper">
+                            <i class="fas fa-fan device-icon"></i>
+                        </div>
+                        <span class="device-name">Fan</span>
+                    </div>
+                    <label class="toggle">
+                        <input type="checkbox" class="device-toggle" data-led="led3">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        
+            
+        </div>
+    </div>
+    <style>
+        /* Styles cho card container */
+        .card {
+            background-color: white !important;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        /* Styles cho tiêu đề */
+        .diagram {
+            color: #333;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        /* Styles cho container của biểu đồ */
+        #chartContainer {
+            background-color: white;
+            padding: 15px;
+            border-radius: 6px;
+            /* Loại bỏ background tối */
+        }
+
+        /* Styles cho canvas */
+        #sensorChart {
+            max-width: 100%;
+            height: auto;
+            background-color: white;
+        }
+
+        /* Thêm styles cho responsive */
+        @media (max-width: 768px) {
+            .card {
+                margin: 10px;
+            }
+            
+            .diagram {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+    <script>
+        async function fetchSensorData() {
+            try {
+                const response = await fetch('http://192.168.183.156:5000/api/sensor-data');
+    
+                // Kiểm tra xem phản hồi có thành công không
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+    
+                const data = await response.json();
+    
+                // Kiểm tra xem dữ liệu có chứa thông tin cần thiết không
+                if (data && data.temperature !== undefined && data.humidity !== undefined && data.light !== undefined) {
+                    // Cập nhật giá trị cho các thẻ HTML
+                    document.getElementById('temperatureValue').innerText = data.temperature + '°C';
+                    document.getElementById('humidityValue').innerText = data.humidity + '%';
+                    document.getElementById('luminosityValue').innerText = data.light + ' Lux';
+    
+                    // Cập nhật màu nền cho thẻ tương ứng (gọi các hàm cập nhật màu nền ở đây)
+                    updateTemperatureBackground(data.temperature);
+                    updateLuminosityBackground(data.light);
+                    updateHumidityBackground(data.humidity);
+                } else {
+                    console.error('Dữ liệu không hợp lệ:', data);
+                }
+            } catch (error) {
+                console.error('Có lỗi xảy ra khi lấy dữ liệu cảm biến:', error);
+                // Có thể hiển thị thông báo lỗi cho người dùng
+            }
+        }
+    
+        // Gọi hàm để lấy dữ liệu khi trang được tải
+        window.onload = function() {
+            // Gọi dữ liệu ngay lập tức
+            fetchSensorData();
+    
+            // Thiết lập interval để gọi dữ liệu sau mỗi 5 giây (5000 ms)
+            setInterval(fetchSensorData, 1000);
+        };
+    </script>
+    
+    
+    
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function() {
+            let sensorChart;
+            const MAX_DATA_POINTS = 10; // Tăng lên 50 điểm dữ liệu
+            let sensorData = {
+                labels: [],
+                temperature: [],
+                luminosity: [],
+                humidity: []
+            };
+        
+            function initChart() {
+                const ctx = document.getElementById('sensorChart');
+                if (!ctx) {
+                    console.error('Canvas element not found');
+                    return;
+                }
+        
+                try {
+                    sensorChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: [],
+                            datasets: [
+                                {
+                                    label: 'Temperature (°C)',
+                                    data: [],
+                                    borderColor: '#ff6b6b',
+                                    backgroundColor: '#ff6b6b',
+                                    fill: false,
+                                    tension: 0.4
+                                },
+                                {
+                                    label: 'Luminosity (Lux)',
+                                    data: [],
+                                    borderColor: '#ffd93d',
+                                    backgroundColor: '#ffd93d',
+                                    fill: false,
+                                    tension: 0.4
+                                },
+                                {
+                                    label: 'Humidity (%)',
+                                    data: [],
+                                    borderColor: '#4dabf7',
+                                    backgroundColor: '#4dabf7',
+                                    fill: false,
+                                    tension: 0.4
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            animation: {
+                                duration: 750
+                            },
+                            scales: {
+                                x: {
+                                    type: 'time',
+                                    time: {
+                                        unit: 'minute',
+                                        displayFormats: {
+                                            minute: 'HH:mm'
+                                        }
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: 'Time'
+                                    }
+                                },
+                                y: {
+                                    beginAtZero: false,
+                                    title: {
+                                        display: true,
+                                        text: 'Values'
+                                    }
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                }
+                            }
+                        }
+                    });
+                    console.log('Chart initialized successfully');
+                } catch (error) {
+                    console.error('Error initializing chart:', error);
+                }
+            }
+        
+            async function loadInitialData() {
+                try {
+                    const response = await fetch('http://localhost:5000/api/data');
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const data = await response.json();
+                    
+                    // Đảo ngược mảng để có thứ tự thời gian từ cũ đến mới
+                    data.reverse();
+        
+                    // Reset sensorData
+                    sensorData = {
+                        labels: [],
+                        temperature: [],
+                        luminosity: [],
+                        humidity: []
+                    };
+        
+                    // Lấy 50 điểm dữ liệu mới nhất
+                    data.slice(-MAX_DATA_POINTS).forEach(point => {
+                        sensorData.labels.push(new Date(point.time));
+                        sensorData.temperature.push(point.temperature);
+                        sensorData.luminosity.push(point.light);
+                        sensorData.humidity.push(point.humidity);
+                    });
+        
+                    updateChart();
+                    
+                    // Cập nhật giá trị mới nhất cho các card
+                    if (data.length > 0) {
+                        const latestData = data[data.length - 1];
+                        updateDisplayValues(
+                            latestData.temperature,
+                            latestData.light,
+                            latestData.humidity
+                        );
+                    }
+        
+                } catch (error) {
+                    console.error('Error loading initial data:', error);
+                }
+            }
+        
+            async function updateLatestData() {
+                try {
+                    const response = await fetch('http://localhost:5000/api/sensor-data');
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const newData = await response.json();
+        
+                    // Thêm dữ liệu mới
+                    const currentTime = new Date();
+                    sensorData.labels.push(currentTime);
+                    sensorData.temperature.push(newData.temperature);
+                    sensorData.luminosity.push(newData.light);
+                    sensorData.humidity.push(newData.humidity);
+        
+                    // Giữ lại 50 điểm dữ liệu mới nhất
+                    if (sensorData.labels.length > MAX_DATA_POINTS) {
+                        sensorData.labels = sensorData.labels.slice(-MAX_DATA_POINTS);
+                        sensorData.temperature = sensorData.temperature.slice(-MAX_DATA_POINTS);
+                        sensorData.luminosity = sensorData.luminosity.slice(-MAX_DATA_POINTS);
+                        sensorData.humidity = sensorData.humidity.slice(-MAX_DATA_POINTS);
+                    }
+        
+                    updateChart();
+                    updateDisplayValues(newData.temperature, newData.light, newData.humidity);
+        
+                } catch (error) {
+                    console.error('Error updating latest data:', error);
+                }
+            }
+        
+            function updateChart() {
+                if (!sensorChart) {
+                    console.error('Chart not initialized');
+                    return;
+                }
+        
+                // Cập nhật dữ liệu cho biểu đồ
+                sensorChart.data.labels = sensorData.labels;
+                sensorChart.data.datasets[0].data = sensorData.temperature.map((value, index) => ({
+                    x: sensorData.labels[index],
+                    y: value
+                }));
+                sensorChart.data.datasets[1].data = sensorData.luminosity.map((value, index) => ({
+                    x: sensorData.labels[index],
+                    y: value
+                }));
+                sensorChart.data.datasets[2].data = sensorData.humidity.map((value, index) => ({
+                    x: sensorData.labels[index],
+                    y: value
+                }));
+        
+                sensorChart.update();
+            }
+        
+            function updateDisplayValues(temperature, luminosity, humidity) {
+                const tempValue = document.querySelector('.temperature + .value');
+                const lumValue = document.querySelector('.luminosity + .value');
+                const humValue = document.querySelector('.humidity + .value');
+        
+                if (tempValue) tempValue.textContent = `${temperature.toFixed(1)}°C`;
+                if (lumValue) lumValue.textContent = `${luminosity.toFixed(0)} Lux`;
+                if (humValue) humValue.textContent = `${humidity.toFixed(1)}%`;
+            }
+        
+            // Khởi tạo biểu đồ
+            initChart();
+        
+            // Load dữ liệu ban đầu
+            loadInitialData();
+        
+            // Cập nhật dữ liệu mỗi 2 giây
+            const updateInterval = setInterval(updateLatestData, 2000);
+        
+            // Dọn dẹp khi thoát trang
+            window.addEventListener('beforeunload', () => {
+                clearInterval(updateInterval);
+            });
+        });
+        
+            // Hàm gửi yêu cầu điều khiển thiết bị
+            function sendControlRequest(deviceName, action) {
+                fetch('http://localhost:5000/api/control', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        deviceName: deviceName,
+                        action: action,
+                        description: `Turned ${action.toLowerCase()} the ${deviceName}`
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(data.message); // Log thông báo thành công
+                })
+                .catch(error => {
+                    console.error('Error:', error); // Log lỗi nếu có
+                });
+            }
+        
+            // Lắng nghe sự kiện thay đổi của các công tắc
+            document.getElementById('toggle-light').addEventListener('change', function() {
+                const action = this.checked ? 'ON' : 'OFF';
+            
+                sendControlRequest('Light', action);
+            });
+        
+            document.getElementById('toggle-fan').addEventListener('change', function() {
+                const action = this.checked ? 'ON' : 'OFF';
+             
+                sendControlRequest('Fan', action);
+            });
+        
+            document.getElementById('toggle-air-conditioner').addEventListener('change', function() {
+                const action = this.checked ? 'ON' : 'OFF';
+            
+                sendControlRequest('Air Conditioner', action);
+            });
+       
+            const toggles = document.querySelectorAll('.toggle-input');
+            toggles.forEach(toggle => {
+                toggle.addEventListener('change', () => {
+                    const icon = toggle.previousElementSibling; // Lấy biểu tượng phía trước
+                    if (toggle.checked) {
+                        // Thêm hiệu ứng cho biểu tượng bật
+                        icon.classList.add('active'); // Thêm lớp active
+                    } else {
+                        // Xóa hiệu ứng cho biểu tượng tắt
+                        icon.classList.remove('active'); // Xóa lớp active
+                    }
+                });
+            });
+    
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e0f2f1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .device-controls {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .controls-title {
+            text-align: center;
+            color: #1a1a1a;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+        }
+
+        .device-item {
+
+            background: #f8f9fa;
+            padding: 1rem 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+
+        .device-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .device-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .icon-wrapper {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .device-icon {
+            font-size: 1.5rem;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .device-name {
+            font-weight: 500;
+            color: #333;
+        }
+
+        /* Toggle Switch */
+        .toggle {
+            position: relative;
+            width: 60px;
+            height: 32px;
+        }
+
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 24px;
+            width: 24px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* Light Device Styles */
+        .light input:checked + .slider {
+            background-color: #ffd700;
+        }
+
+        .light.active .icon-wrapper {
+            
+            background-color: #cdc684;
+        }
+
+        .light.active .device-icon {
+            
+            color: #ffd700;
+            animation: pulse 1.5s infinite;
+        }
+
+        /* Fan Device Styles */
+        .fan input:checked + .slider {
+            background-color: #4CAF50;
+        }
+
+        .fan.active .icon-wrapper {
+            background-color: #e8f5e9;
+            transition-delay: 2.5s;
+        }
+
+        .fan.active .device-icon {
+            
+            color: #4CAF50;
+            animation: spin 2s linear infinite;
+        }
+
+        /* AC Device Styles */
+        .ac input:checked + .slider {
+           
+            background-color: #2196F3;
+        }
+
+        .ac.active .icon-wrapper {
+            
+            background-color: #e3f2fd;
+        }
+
+        .ac.active .device-icon {
+            
+            color: #2196F3;
+            animation: bounce 1s infinite;
+        }
+
+        input:checked + .slider:before {
+            
+            transform: translateX(26px);
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        /* Hover Effects */
+        .device-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .slider:hover {
+            opacity: 0.9;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const deviceItems = document.querySelectorAll('.device-item');
+        
+            // Kết nối WebSocket để nhận dữ liệu trạng thái từ server
+            const ws = new WebSocket('ws://192.168.183.156:3000'); // Thay 'localhost:3000' bằng địa chỉ WebSocket server của bạn
+        
+            // Lắng nghe dữ liệu trạng thái từ WebSocket
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                
+                if (data.type === 'ledStatus') {
+                    updateDeviceStatus(data.data);  // Cập nhật trạng thái của các thiết bị
+                }
+            };
+        
+            deviceItems.forEach(item => {
+                const toggle = item.querySelector('.device-toggle');
+                const deviceName = item.dataset.device;
+        
+                // Load saved state from localStorage
+                const savedState = localStorage.getItem(deviceName);
+                if (savedState === 'true') {
+                    toggle.checked = true;
+                    item.classList.add('active');
+                }
+        
+                // Lắng nghe sự kiện thay đổi trạng thái thiết bị
+                toggle.addEventListener('change', function() {
+                    const isOn = this.checked;
+                    localStorage.setItem(deviceName, isOn);
+                    sendControlRequest(deviceName, isOn ? 'ON' : 'OFF');
+                });
+            });
+        
+            // Cập nhật trạng thái của các thiết bị dựa trên dữ liệu từ server
+            function updateDeviceStatus(ledStatus) {
+                deviceItems.forEach(item => {
+                    const deviceName = item.dataset.device;
+                    const toggle = item.querySelector('.device-toggle');
+        
+                    // Kiểm tra trạng thái từ ledStatus và áp dụng hoạt ảnh
+                    if (ledStatus[deviceName] === 'on') {
+                        toggle.checked = true;
+                        item.classList.add('active');  // Thêm lớp active để hiển thị hoạt ảnh
+                    } else {
+                        toggle.checked = false;
+                        item.classList.remove('active');  // Loại bỏ lớp active khi tắt
+                    }
+                });
+            }
+        
+            // Hàm gửi yêu cầu điều khiển đến API
+            function sendControlRequest(deviceName, action) {
+                fetch('http://localhost:5000/api/control', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        deviceName: deviceName,
+                        action: action,
+                        description: `Turned ${action.toLowerCase()} the ${deviceName}`
+                    })
+                })
+                .then(response => response.json())
+                .then(data => console.log('Success:', data))
+                .catch(error => console.error('Error:', error));
+            }
+        });
+        
+    </script>
+    <!-- Liên kết tới tệp JavaScript -->
+    <script src="dashboard.js"></script>
+  
+
+</body>
+</html>

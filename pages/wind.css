@@ -1,0 +1,24 @@
+
+    #windSpeedAlertContainer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    #windSpeedAlert {
+        font-size: 18px;
+        padding: 10px;
+        border-radius: 5px;
+        margin: 0;
+    }
+    .alert-normal {
+        background-color: lightgreen;
+        color: green;
+    }
+    .alert-high {
+        background-color: yellow;
+        color: black;
+    }
+    .alert-very-high {
+        background-color: red;
+        color: white;
+    }
