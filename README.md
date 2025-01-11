@@ -8,3 +8,4 @@ Backend: API server xử lý logic và quản lý dữ liệu
 Frontend: Giao diện người dùng web để điều khiển và giám sát
 MQTT Broker: Trung gian kết nối giữa phần cứng và phần mềm
 Database: Lưu trữ dữ liệu thiết bị và lịch sử hoạt động
+Chi tiết xem tại file báo cáo.
